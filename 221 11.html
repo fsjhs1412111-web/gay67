@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 故事骰子 | AI 創意思維一頁式展示平台</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            indigo: '#6366f1',
+                            emerald: '#10b981',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Microsoft JhengHei', 'PingFang TC', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 15px 30px -10px rgba(139, 92, 246, 0.3);
+        }
+
+        /* 3D Dice Styling */
+        .dice-scene { perspective: 800px; }
+        .dice-cube {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.2, 0.85, 0.25, 1.15);
+        }
+        .dice-face {
+            position: absolute; width: 100%; height: 100%;
+            border-radius: 1rem; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; font-weight: 800;
+            backface-visibility: hidden; border: 2px solid rgba(255, 255, 255, 0.25);
+            box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2), 0 8px 16px rgba(0,0,0,0.5);
+            user-select: none;
+        }
+
+        .face-0 { transform: rotateY(  0deg) translateZ(48px); }
+        .face-1 { transform: rotateY(180deg) translateZ(48px); }
+        .face-2 { transform: rotateY( -90deg) translateZ(48px); }
+        .face-3 { transform: rotateY( 90deg) translateZ(48px); }
+        .face-4 { transform: rotateX( -90deg) translateZ(48px); }
+        .face-5 { transform: rotateX( 90deg) translateZ(48px); }
+
+        @media (min-width: 640px) {
+            .face-0 { transform: rotateY(  0deg) translateZ(56px); }
+            .face-1 { transform: rotateY(180deg) translateZ(56px); }
+            .face-2 { transform: rotateY( -90deg) translateZ(56px); }
+            .face-3 { transform: rotateY( 90deg) translateZ(56px); }
+            .face-4 { transform: rotateX( -90deg) translateZ(56px); }
+            .face-5 { transform: rotateX( 90deg) translateZ(56px); }
+        }
+
+        .glow-blob {
+            position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.18; pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-purple-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Glowing Background Highlights -->
+    <div class="glow-blob w-[500px] h-[500px] bg-purple-600 top-[-100px] left-[-100px]"></div>
+    <div class="glow-blob w-[600px] h-[600px] bg-indigo-600 top-[40%] right-[-150px]"></div>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 inset-x-0 z-50 glass-card border-b border-slate-800/80 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#" class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-purple-500/30">
+                    <i class="fa-solid fa-dice-d20 text-lg"></i>
+                </div>
+                <span class="font-black text-lg tracking-tight bg-gradient-to-r from-purple-300 via-pink-300 to-indigo-200 bg-clip-text text-transparent">
+                    3D 故事骰子
+                </span>
+            </a>
+
+            <!-- Quick Icon Navigation -->
+            <nav class="hidden md:flex items-center space-x-6 text-xs font-bold text-slate-300">
+                <a href="#features" class="hover:text-purple-400 transition flex items-center gap-1.5"><i class="fa-solid fa-sparkles text-purple-400"></i>特色</a>
+                <a href="#gameplay" class="hover:text-pink-400 transition flex items-center gap-1.5"><i class="fa-solid fa-gamepad text-pink-400"></i>試玩平台</a>
+                <a href="#workflow" class="hover:text-emerald-400 transition flex items-center gap-1.5"><i class="fa-solid fa-route text-emerald-400"></i>流程</a>
+                <a href="#tech" class="hover:text-indigo-400 transition flex items-center gap-1.5"><i class="fa-solid fa-code text-indigo-400"></i>技術Stack</a>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button onclick="openKeyModal()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-slate-200 hover:border-purple-500 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-key text-amber-400"></i>
+                    <span>API Key</span>
+                </button>
+                <a href="#gameplay" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-xs font-extrabold text-white shadow-lg shadow-purple-600/30 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-play"></i>
+                    <span>立即體驗</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section (Visual & Minimal Text) -->
+    <section class="pt-28 pb-12 px-4 max-w-7xl mx-auto text-center relative z-10 space-y-6">
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-purple-950/70 border border-purple-500/40 text-purple-300 text-xs font-bold shadow-inner">
+            <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+            <span>3D 擬真體感 ✕ Gemini AI 雙引擎創作平台</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+            轉動 3D 骰子 <i class="fa-solid fa-dice text-purple-400 mx-1"></i><br/>
+            <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-300 bg-clip-text text-transparent">
+                瞬間生成故事與精美插圖
+            </span>
+        </h1>
+
+        <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto font-medium">
+            角色 ‧ 場景 ‧ 事件 ‧ 道具 — 4 顆骰子組合無限靈感！
+        </p>
+
+        <!-- 4 Core Element Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-2">
+            <div class="p-3 rounded-2xl glass-card border border-purple-800/50 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-user-ninja text-purple-400 text-lg"></i>
+                <span class="text-xs font-bold text-purple-200">角色 (Character)</span>
+            </div>
+            <div class="p-3 rounded-2xl glass-card border border-emerald-800/50 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-castle text-emerald-400 text-lg"></i>
+                <span class="text-xs font-bold text-emerald-200">場景 (Setting)</span>
+            </div>
+            <div class="p-3 rounded-2xl glass-card border border-amber-800/50 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt text-amber-400 text-lg"></i>
+                <span class="text-xs font-bold text-amber-200">事件 (Event)</span>
+            </div>
+            <div class="p-3 rounded-2xl glass-card border border-rose-800/50 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-key text-rose-400 text-lg"></i>
+                <span class="text-xs font-bold text-rose-200">道具 (Item)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: 4 Key Features (Icon-Driven Grid) -->
+    <section id="features" class="py-10 px-4 max-w-7xl mx-auto relative z-10 space-y-6">
+        <div class="text-center">
+            <h2 class="text-xl sm:text-3xl font-black text-white flex items-center justify-center gap-2">
+                <i class="fa-solid fa-star text-purple-400"></i>
+                <span>4 大核心特色</span>
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Feature 1 -->
+            <div class="glass-card glass-hover p-5 rounded-3xl text-center space-y-3">
+                <div class="w-12 h-12 rounded-2xl bg-purple-950/80 border border-purple-500/40 mx-auto flex items-center justify-center text-purple-400 text-xl shadow-lg">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <h3 class="font-bold text-white text-base">🎲 3D 物理體感</h3>
+                <p class="text-xs text-slate-400">CSS 3D 多軸旋轉動畫，支援單骰獨立重擲</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="glass-card glass-hover p-5 rounded-3xl text-center space-y-3">
+                <div class="w-12 h-12 rounded-2xl bg-pink-950/80 border border-pink-500/40 mx-auto flex items-center justify-center text-pink-400 text-xl shadow-lg">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3 class="font-bold text-white text-base">📖 Gemini AI 故事</h3>
+                <p class="text-xs text-slate-400">自動整合 4 大要素，即時輸出精采微型故事</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="glass-card glass-hover p-5 rounded-3xl text-center space-y-3">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 mx-auto flex items-center justify-center text-emerald-400 text-xl shadow-lg">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <h3 class="font-bold text-white text-base">🎨 Imagen AI 插圖</h3>
+                <p class="text-xs text-slate-400">依據故事情節自動繪製高清繪本風格插畫</p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="glass-card glass-hover p-5 rounded-3xl text-center space-y-3">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-950/80 border border-indigo-500/40 mx-auto flex items-center justify-center text-indigo-400 text-xl shadow-lg">
+                    <i class="fa-solid fa-volume-high"></i>
+                </div>
+                <h3 class="font-bold text-white text-base">🔊 原生 Web Audio</h3>
+                <p class="text-xs text-slate-400">零外包音訊檔，瀏覽器實時動態合成音效</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: Embedded Interactive Game Platform -->
+    <section id="gameplay" class="py-10 px-4 max-w-7xl mx-auto relative z-10">
+        <div class="glass-card rounded-3xl p-5 sm:p-8 border border-purple-500/30 shadow-2xl space-y-6">
+            
+            <!-- Playground Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
+                    <h2 class="text-xl font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad text-pink-400"></i>
+                        <span>實機體驗平台 (Playable Playground)</span>
+                    </h2>
+                </div>
+
+                <!-- Theme Dropdown -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-bold text-slate-400"><i class="fa-solid fa-palette text-purple-400 mr-1"></i>題材：</span>
+                    <select id="gameThemeSelect" onchange="changeGameTheme(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-purple-500 font-bold">
+                        <option value="magic">✨ 奇幻冒險</option>
+                        <option value="scifi">🚀 科幻未來</option>
+                        <option value="fairytale">📖 童話繪本</option>
+                        <option value="cyberpunk">🏙️ 賽博朋克</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 4 Cubes Live Display -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 py-2 justify-items-center">
+                <!-- Die 0 -->
+                <div class="flex flex-col items-center space-y-2">
+                    <span class="px-2 py-0.5 rounded-lg bg-purple-950/80 border border-purple-800 text-purple-300 text-xs font-bold">
+                        👤 角色
+                    </span>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 dice-scene cursor-pointer" onclick="rollSingleDie(0)" title="點擊重擲此骰">
+                        <div id="dice-cube-0" class="dice-cube"></div>
+                    </div>
+                </div>
+
+                <!-- Die 1 -->
+                <div class="flex flex-col items-center space-y-2">
+                    <span class="px-2 py-0.5 rounded-lg bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold">
+                        🏰 場景
+                    </span>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 dice-scene cursor-pointer" onclick="rollSingleDie(1)" title="點擊重擲此骰">
+                        <div id="dice-cube-1" class="dice-cube"></div>
+                    </div>
+                </div>
+
+                <!-- Die 2 -->
+                <div class="flex flex-col items-center space-y-2">
+                    <span class="px-2 py-0.5 rounded-lg bg-amber-950/80 border border-amber-800 text-amber-300 text-xs font-bold">
+                        💥 事件
+                    </span>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 dice-scene cursor-pointer" onclick="rollSingleDie(2)" title="點擊重擲此骰">
+                        <div id="dice-cube-2" class="dice-cube"></div>
+                    </div>
+                </div>
+
+                <!-- Die 3 -->
+                <div class="flex flex-col items-center space-y-2">
+                    <span class="px-2 py-0.5 rounded-lg bg-rose-950/80 border border-rose-800 text-rose-300 text-xs font-bold">
+                        🗝️ 道具
+                    </span>
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 dice-scene cursor-pointer" onclick="rollSingleDie(3)" title="點擊重擲此骰">
+                        <div id="dice-cube-3" class="dice-cube"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button id="rollAllBtn" onclick="rollAllDice()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-purple-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-dice text-base"></i>
+                    <span>🎲 一鍵全擲 (Roll All)</span>
+                </button>
+                <button onclick="triggerAiStoryAndImage()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+                    <span>✨ AI 生成故事與插圖</span>
+                </button>
+            </div>
+
+            <!-- Output Display Area -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <!-- Rolled Items Chips -->
+                <div id="rolledChipsContainer" class="flex flex-wrap gap-2 text-xs font-bold border-b border-slate-800 pb-3">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Story Output -->
+                <div class="space-y-1">
+                    <span class="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-book-open"></i> 故事生成展演：
+                    </span>
+                    <div id="storyOutput" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs sm:text-sm leading-relaxed min-h-[60px]">
+                        點擊「🎲 一鍵全擲」或「✨ AI 生成故事」體驗互動效果……
+                    </div>
+                </div>
+
+                <!-- Image Output -->
+                <div class="space-y-1">
+                    <span class="text-xs font-bold text-pink-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-image"></i> AI 插圖展示：
+                    </span>
+                    <div id="imageOutput" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center min-h-[140px]">
+                        <span class="text-slate-500 text-xs italic">等待 AI 繪製插圖...</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION: 4-Step Visual Workflow (Icon Steps) -->
+    <section id="workflow" class="py-10 px-4 max-w-7xl mx-auto relative z-10 space-y-6">
+        <div class="text-center">
+            <h2 class="text-xl sm:text-3xl font-black text-white flex items-center justify-center gap-2">
+                <i class="fa-solid fa-route text-emerald-400"></i>
+                <span>4 步創作流程</span>
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Step 1 -->
+            <div class="glass-card p-5 rounded-3xl space-y-2 border-t-4 border-t-purple-500 relative">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-purple-400">STEP 01</span>
+                    <i class="fa-solid fa-dice text-purple-400 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-white text-sm">🎲 擲出 4 顆魔法骰</h3>
+                <p class="text-[11px] text-slate-400">隨機碰撞出角色、場景、事件與道具組合</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="glass-card p-5 rounded-3xl space-y-2 border-t-4 border-t-indigo-500 relative">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-indigo-400">STEP 02</span>
+                    <i class="fa-solid fa-lightbulb text-indigo-400 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-white text-sm">💡 靈感開端產生</h3>
+                <p class="text-[11px] text-slate-400">自動串接故事句型，啟發創意思維</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="glass-card p-5 rounded-3xl space-y-2 border-t-4 border-t-pink-500 relative">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-pink-400">STEP 03</span>
+                    <i class="fa-solid fa-wand-magic-sparkles text-pink-400 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-white text-sm">📖 Gemini 寫作篇章</h3>
+                <p class="text-[11px] text-slate-400">雙 AI 即時輸出結構完整的微型故事</p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="glass-card p-5 rounded-3xl space-y-2 border-t-4 border-t-emerald-500 relative">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black text-emerald-400">STEP 04</span>
+                    <i class="fa-solid fa-paint-brush text-emerald-400 text-xl"></i>
+                </div>
+                <h3 class="font-bold text-white text-sm">🎨 Imagen 繪製插圖</h3>
+                <p class="text-[11px] text-slate-400">視覺化渲染，生成專屬繪本圖卡</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: Tech Stack Badges -->
+    <section id="tech" class="py-10 px-4 max-w-7xl mx-auto relative z-10">
+        <div class="glass-card rounded-3xl p-6 text-center space-y-4">
+            <h2 class="text-lg font-black text-white flex items-center justify-center gap-2">
+                <i class="fa-solid fa-code-branch text-indigo-400"></i>
+                <span>技術架構標籤</span>
+            </h2>
+
+            <!-- Badges -->
+            <div class="flex flex-wrap items-center justify-center gap-2.5 text-xs font-bold">
+                <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center gap-1.5"><i class="fa-brands fa-html5 text-orange-500"></i> HTML5 Single-File</span>
+                <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center gap-1.5"><i class="fa-brands fa-css3-alt text-sky-400"></i> Tailwind CSS</span>
+                <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-cube text-purple-400"></i> CSS 3D Engine</span>
+                <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-brain text-pink-400"></i> Gemini 2.5 Flash</span>
+                <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-image text-emerald-400"></i> Imagen 3.0</span>
+                <span class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-volume-high text-amber-400"></i> Web Audio Synth</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 space-y-1">
+        <p>© 2026 3D 故事骰子 (Story Dice Showcase) | 一頁式展示平台</p>
+    </footer>
+
+    <!-- API KEY MODAL -->
+    <div id="keyModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="glass-card p-6 rounded-3xl max-w-md w-full border border-slate-700 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-key text-amber-400"></i> 設定 Gemini API Key
+                </h3>
+                <button onclick="closeKeyModal()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <p class="text-xs text-slate-400">請貼上 Google Gemini API Key 以開啟真實 AI 故事與繪圖連線：</p>
+            <input type="password" id="apiKeyInput" placeholder="貼上 API Key (AIzaSy...)" class="w-full p-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-100 text-xs focus:outline-none focus:border-purple-500">
+            <div class="flex justify-end gap-2">
+                <button onclick="closeKeyModal()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">取消</button>
+                <button onclick="saveApiKey()" class="px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold shadow-2xl transition-all opacity-0 pointer-events-none translate-y-2 z-50">
+        <span id="toastMsg">通知</span>
+    </div>
+
+    <!-- JAVASCRIPT GAME & INTERACTION ENGINE -->
+    <script>
+        const THEME_PRESETS = {
+            magic: [
+                [{ text: '🧙‍♂️ 巫師' }, { text: '🤖 機器人' }, { text: '🐱 流浪貓' }, { text: '🕵️ 偵探' }, { text: '⚔️ 騎士' }, { text: '👽 外星人' }],
+                [{ text: '🏰 古堡' }, { text: '🚀 太空站' }, { text: '🌲 迷霧森林' }, { text: '🌊 海底城' }, { text: '🏭 廢棄工廠' }, { text: '☁️ 雲端之城' }],
+                [{ text: '⚡ 時空穿越' }, { text: '🔍 尋找秘寶' }, { text: '💥 意外爆炸' }, { text: '🔐 解開暗號' }, { text: '⚠️ 遭遇危機' }, { text: '🤝 達成同盟' }],
+                [{ text: '🗝️ 神秘鑰匙' }, { text: '📜 古老地圖' }, { text: '⏳ 時間沙漏' }, { text: '🔮 魔法水晶' }, { text: '📖 破舊日記' }, { text: '🔫 雷射槍' }]
+            ],
+            scifi: [
+                [{ text: '🧑‍💻 賽博駭客' }, { text: '🚀 星際探險家' }, { text: '🤖 覺醒 AI' }, { text: '👽 外星通譯官' }, { text: '👨‍🚀 機械技師' }, { text: '🕵️ 時空偵探' }],
+                [{ text: '🏙️ 霓虹暗巷' }, { text: '🛸 星際戰艦' }, { text: '🔬 量子實驗室' }, { text: '🪐 荒涼外星基地' }, { text: '🌐 虛擬元宇宙' }, { text: '🛰️ 軌道太空站' }],
+                [{ text: '📡 攔截神秘訊號' }, { text: '⏳ 時空跳躍失控' }, { text: '🧠 人工智慧覺醒' }, { text: '💥 反應堆即將爆炸' }, { text: '👾 遭遇異形入侵' }, { text: '💾 核心數據流失' }],
+                [{ text: '💾 數據晶片' }, { text: '⚔️ 等離子光劍' }, { text: '🛡️ 反重力裝置' }, { text: '👓 全息眼鏡' }, { text: '🔫 脈衝射線槍' }, { text: '🔋 高能核電池' }]
+            ],
+            fairytale: [
+                [{ text: '👧 勇敢小紅帽' }, { text: '🐇 會說話的兔子' }, { text: '🧚 森林仙子' }, { text: '🐻 溫柔大熊' }, { text: '👑 青蛙王子' }, { text: '🦊 狡猾狐狸' }],
+                [{ text: '🍭 繽紛糖果屋' }, { text: '🏰 雲端城堡' }, { text: '🌲 魔法森林' }, { text: '🌊 七彩水晶湖' }, { text: '🍄 巨型蘑菇村' }, { text: '🌻 太陽花花園' }],
+                [{ text: '👑 尋找失落皇冠' }, { text: '🧩 解開森林謎題' }, { text: '💃 參加午夜舞會' }, { text: '🍎 誤食毒蘋果' }, { text: '💤 陷入百年沉睡' }, { text: '🕊️ 拯救受傷小鳥' }],
+                [{ text: '🪄 仙子魔法棒' }, { text: '🎃 飛天南瓜車' }, { text: '🧹 會飛的掃帚' }, { text: '👠 水晶鞋' }, { text: '🪞 會說話的魔鏡' }, { text: '🪶 金色羽毛' }]
+            ],
+            cyberpunk: [
+                [{ text: '🦾 義體醫生' }, { text: '🕶️ 街頭賞金獵人' }, { text: '👩‍💻 紅客潛行者' }, { text: '🏢 企業特工' }, { text: '🏍️ 飆速快遞員' }, { text: '🤖 廢棄仿生人' }],
+                [{ text: '🌃 企業高樓' }, { text: '🛒 黑市診所' }, { text: '🌉 雨夜天橋' }, { text: '🕹️ 復古 Arcade 廳' }, { text: '🍜 街角拉麵攤' }, { text: '🏭 晶片工廠' }],
+                [{ text: '🔓 資料庫遭入侵' }, { text: '🫀 器官走私案' }, { text: '🔫 幫派領地槍戰' }, { text: '⚡ 全市大停電' }, { text: '🧬 病毒洩漏' }, { text: '🚨 遭全城通緝' }],
+                [{ text: '💾 加密硬碟' }, { text: '🔪 高頻震動刀' }, { text: '💉 腎上腺素劑' }, { text: '📱 解碼器' }, { text: '👁️ 義眼掃描器' }, { text: '🛹 磁浮滑板' }]
+            ]
+        };
+
+        let currentDiceData = JSON.parse(JSON.stringify(THEME_PRESETS.magic));
+        let activeResults = [0, 0, 0, 0];
+        let diceRotations = [{ x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 }];
+
+        const faceAngles = [
+            { x: 0, y: 0 }, { x: 0, y: 180 }, { x: 0, y: -90 },
+            { x: 0, y: 90 }, { x: -90, y: 0 }, { x: 90, y: 0 }
+        ];
+
+        function playSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                for (let i = 0; i < 5; i++) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(150 + Math.random() * 250, ctx.currentTime + i * 0.08);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.06);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + i * 0.08); osc.stop(ctx.currentTime + i * 0.08 + 0.06);
+                }
+            } catch (e) {}
+        }
+
+        function renderDiceCubes() {
+            for (let i = 0; i < 4; i++) {
+                const cubeEl = document.getElementById(`dice-cube-${i}`);
+                if (!cubeEl) continue;
+                let html = '';
+                currentDiceData[i].forEach((face, fIndex) => {
+                    html += `<div class="dice-face face-${fIndex} bg-slate-900 text-slate-100">
+                        <span class="text-xs sm:text-sm font-bold text-center px-1">${face.text}</span>
+                    </div>`;
+                });
+                cubeEl.innerHTML = html;
+            }
+            updateRolledChips();
+        }
+
+        function rollSingleDie(index) {
+            playSound();
+            const targetFace = Math.floor(Math.random() * 6);
+            activeResults[index] = targetFace;
+
+            const extraX = (3 + Math.floor(Math.random() * 2)) * 360;
+            const extraY = (3 + Math.floor(Math.random() * 2)) * 360;
+            const base = faceAngles[targetFace];
+
+            diceRotations[index].x += extraX + base.x - (diceRotations[index].x % 360);
+            diceRotations[index].y += extraY + base.y - (diceRotations[index].y % 360);
+
+            const cubeEl = document.getElementById(`dice-cube-${index}`);
+            if (cubeEl) {
+                cubeEl.style.transform = `rotateX(${diceRotations[index].x}deg) rotateY(${diceRotations[index].y}deg)`;
+            }
+            setTimeout(updateRolledChips, 1200);
+        }
+
+        function rollAllDice() {
+            playSound();
+            for (let i = 0; i < 4; i++) {
+                const targetFace = Math.floor(Math.random() * 6);
+                activeResults[i] = targetFace;
+
+                const extraX = (3 + Math.floor(Math.random() * 2)) * 360;
+                const extraY = (3 + Math.floor(Math.random() * 2)) * 360;
+                const base = faceAngles[targetFace];
+
+                diceRotations[i].x += extraX + base.x - (diceRotations[i].x % 360);
+                diceRotations[i].y += extraY + base.y - (diceRotations[i].y % 360);
+
+                const cubeEl = document.getElementById(`dice-cube-${i}`);
+                if (cubeEl) {
+                    cubeEl.style.transform = `rotateX(${diceRotations[i].x}deg) rotateY(${diceRotations[i].y}deg)`;
+                }
+            }
+            setTimeout(() => {
+                updateRolledChips();
+                showToast('🎲 4 顆骰子已成功重擲！');
+            }, 1200);
+        }
+
+        function updateRolledChips() {
+            const container = document.getElementById('rolledChipsContainer');
+            if (!container) return;
+
+            const c = currentDiceData[0][activeResults[0]].text;
+            const s = currentDiceData[1][activeResults[1]].text;
+            const e = currentDiceData[2][activeResults[2]].text;
+            const i = currentDiceData[3][activeResults[3]].text;
+
+            container.innerHTML = `
+                <span class="px-2.5 py-1 rounded-lg bg-purple-950/80 text-purple-300 border border-purple-800">${c}</span>
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-800">${s}</span>
+                <span class="px-2.5 py-1 rounded-lg bg-amber-950/80 text-amber-300 border border-amber-800">${e}</span>
+                <span class="px-2.5 py-1 rounded-lg bg-rose-950/80 text-rose-300 border border-rose-800">${i}</span>
+            `;
+        }
+
+        function changeGameTheme(key) {
+            if (THEME_PRESETS[key]) {
+                currentDiceData = JSON.parse(JSON.stringify(THEME_PRESETS[key]));
+                renderDiceCubes();
+                rollAllDice();
+            }
+        }
+
+        async function triggerAiStoryAndImage() {
+            const apiKey = localStorage.getItem('gemini_api_key');
+            const storyOutput = document.getElementById('storyOutput');
+            const imageOutput = document.getElementById('imageOutput');
+
+            const c = currentDiceData[0][activeResults[0]].text;
+            const s = currentDiceData[1][activeResults[1]].text;
+            const e = currentDiceData[2][activeResults[2]].text;
+            const i = currentDiceData[3][activeResults[3]].text;
+
+            if (!apiKey) {
+                storyOutput.innerHTML = `
+                    <p class="text-indigo-300 font-bold mb-1">【展示故事範例（無 API Key）】</p>
+                    在【${s}】的深夜，【${c}】遇到了【${e}】！關鍵時刻，【${i}】發出了神秘光芒……
+                    <p class="text-xs text-amber-400 mt-2">💡 提示：點擊右上角「🔑 API Key」填入 Key 即可體驗真實 AI 生成！</p>
+                `;
+                imageOutput.innerHTML = `<span class="text-xs text-slate-400">填入 API Key 後將自動為您繪製專屬故事插圖！</span>`;
+                showToast('已顯示範例故事！可點擊 API Key 嘗試連線');
+                return;
+            }
+
+            storyOutput.innerHTML = `<span class="animate-pulse text-purple-300"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Gemini 構思故事中...</span>`;
+            imageOutput.innerHTML = `<span class="animate-pulse text-pink-300"><i class="fa-solid fa-paint-brush mr-2"></i>Imagen 繪製插圖中...</span>`;
+
+            try {
+                const prompt = `請根據以下4個故事要素寫出一段150字內的短故事：角色：${c}、場景：${s}、事件：${e}、道具：${i}`;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                if (!res.ok) throw new Error(`HTTP 錯誤 ${res.status}`);
+                const data = await res.json();
+                const text = data.candidates[0].content.parts[0].text;
+                storyOutput.innerText = text;
+
+                const imgRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        instances: [{ prompt: `Illustration: ${c} in ${s} with ${i}` }],
+                        parameters: { sampleCount: 1, aspectRatio: "1:1" }
+                    })
+                });
+
+                if (imgRes.ok) {
+                    const imgData = await imgRes.json();
+                    const b64 = imgData.predictions[0].bytesBase64Encoded;
+                    imageOutput.innerHTML = `<img src="data:image/jpeg;base64,${b64}" class="max-h-56 rounded-xl shadow-lg border border-slate-700">`;
+                } else {
+                    imageOutput.innerHTML = `<span class="text-xs text-slate-400">故事生成成功！插圖受限未生成。</span>`;
+                }
+                showToast('✨ AI 故事與插圖生成完成！');
+            } catch (err) {
+                storyOutput.innerHTML = `<span class="text-rose-400">❌ 生成失敗：${err.message}</span>`;
+                imageOutput.innerHTML = `<span class="text-slate-500 text-xs">無法載入</span>`;
+            }
+        }
+
+        function openKeyModal() {
+            document.getElementById('keyModal').classList.remove('hidden');
+            document.getElementById('keyModal').classList.add('flex');
+            document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_api_key') || '';
+        }
+        function closeKeyModal() {
+            document.getElementById('keyModal').classList.add('hidden');
+            document.getElementById('keyModal').classList.remove('flex');
+        }
+        function saveApiKey() {
+            const val = document.getElementById('apiKeyInput').value.trim();
+            if (val) {
+                localStorage.setItem('gemini_api_key', val);
+                showToast('🔑 API Key 已儲存！');
+            } else {
+                localStorage.removeItem('gemini_api_key');
+                showToast('已清除 API Key');
+            }
+            closeKeyModal();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+        }
+
+        window.onload = function() {
+            renderDiceCubes();
+            setTimeout(rollAllDice, 400);
+        };
+    </script>
+</body>
+</html>
