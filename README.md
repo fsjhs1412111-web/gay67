@@ -1,206 +1,133 @@
-# gay67
-📖 專案簡介
+<div align="center">
 
-3D 故事骰子（3D Story Dice AI） 是一款結合 CSS 3D 物理體感動畫、Web Audio 原生音效合成 與 Google Gemini / Imagen 雙生成式 AI 引擎 的互動式創意寫作與展示平台。
+# 🎲 3D 故事骰子 (3D Story Dice AI)
+
+**轉動 3D 命運骰子 ‧ 瞬間碰撞無限靈感 ‧ 雙 AI 引擎自動生成故事與專屬插圖**
+
+[![HTML5](https://img.shields.io/badge/HTML5-Single--File-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Glassmorphism-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Gemini AI](https://img.shields.io/badge/Gemini_2.5_Flash-Story_Engine-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev/)
+[![Imagen 3](https://img.shields.io/badge/Imagen_3.0-Art_Generator-FF6F61?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+[📖 專案簡介](#-專案簡介) • [🌱 緣由與動機](#-緣由與動機) • [✨ 核心特色](#-核心特色) • [🗺️ 開發歷程](#️-開發歷程) • [🚀 快速開始](#-快速開始)
+
+</div>
+
+---
+
+## 📖 專案簡介
+
+**3D 故事骰子（3D Story Dice AI）** 是一款結合 **CSS 3D 物理體感動畫**、**Web Audio 原生音效合成** 與 **Google Gemini / Imagen 雙生成式 AI 引擎** 的互動式創意寫作與展示平台。
 
 使用者只需輕點擲骰，系統便會透過四顆代表不同故事維度的 3D 立體骰子，隨機組合出獨特的劇情元素，並一鍵調用 AI 撰寫結構完整的微型故事、繪製專屬繪本插圖，為創作者、教育工作者與桌遊愛好者提供零門檻的靈感發想體驗。
 
-💡 零依賴單檔架構（Zero-Dependency Single-File）：無需安裝 Node.js、無需繁瑣的後端伺服器配置，單一 .html 檔案即可在任何現代瀏覽器中流暢運行！
+> 💡 **零依賴單檔架構（Zero-Dependency Single-File）**：無需安裝 Node.js、無需繁瑣的後端伺服器配置，單一 `.html` 檔案即可在任何現代瀏覽器中流暢運行！
 
-🌱 緣由與動機
+---
 
-📌 專案緣由 (Origin)
+## 🌱 緣由與動機
 
+### 📌 專案緣由 (Origin)
 靈感源自經典的實體桌遊《故事骰》（Story Cubes）。在腦力激盪、創意寫作教學或親子互動時，人們常面臨「不知從何下筆（Writer's Block）」的困境。透過將抽象的靈感具象化為「擲骰子」的隨機趣味，能有效打破思維定勢，讓每個人都能輕鬆開口說故事。
 
-🎯 開發動機 (Motivation)
+### 🎯 開發動機 (Motivation)
+1. **數位化與體感重現**：將實體桌遊搬上網頁，利用純 CSS 3D 透視變換與多軸旋轉演算法，重現擲骰時的期待感與視覺張力。
+2. **賦能生成式 AI 想像力**：傳統故事骰止步於「提供關鍵字」，本專案進一步串接多模態 AI，將擲出的隨機要素自動擴寫為生動篇章並具象化為插畫，實現「從概念到視聽作品」的完整閉環。
+3. **極致輕量化與高可攜性**：堅持單一 HTML 檔案設計，讓使用者無論是在課堂簡報、工作坊展示或離線環境中，都能隨開隨用、自由客製化。
 
-數位化與體感重現：將實體桌遊搬上網頁，利用純 CSS 3D 透視變換與多軸旋轉演算法，重現擲骰時的期待感與視覺張力。
+---
 
-賦能生成式 AI 想像力：傳統故事骰止步於「提供關鍵字」，本專案進一步串接多模態 AI，將擲出的隨機要素自動擴寫為生動篇章並具象化為插畫，實現「從概念到視聽作品」的完整閉環。
+## ✨ 核心特色
 
-極致輕量化與高可攜性：堅持單一 HTML 檔案設計，讓使用者無論是在課堂簡報、工作坊展示或離線環境中，都能隨開隨用、自由客製化。
+### 🎲 四維度故事元素系統
 
-✨ 核心特色
+| 骰子編號 | 代表維度 | 色彩識別 | 預設元素範例 | 核心作用 |
+| :---: | :---: | :---: | :--- | :--- |
+| **Die 01** | 👤 **角色 (Character)** | 🟣 幻影紫 | 巫師、機器人、流浪貓、賽博駭客 | 確立故事的主角視角與性格基調 |
+| **Die 02** | 🏰 **場景 (Setting)** | 🟢 翡翠綠 | 迷霧森林、太空站、雲端之城、霓虹暗巷 | 建構世界觀與事件發生的空間舞台 |
+| **Die 03** | 💥 **事件 (Event)** | 🟠 琥珀橙 | 時空穿越、尋找秘寶、遭遇危機、解開暗號 | 推動劇情發展的核心衝突與轉折點 |
+| **Die 04** | 🗝️ **道具 (Item)** | 🔴 玫瑰紅 | 神秘鑰匙、時間沙漏、魔法水晶、加密硬碟 | 成為破局關鍵或貫穿劇情的象徵物 |
 
-🎲 四維度故事元素系統
+### 🌟 平台亮點功能
 
-骰子編號
+* **🧊 擬真 3D 物理翻轉**：支援「一鍵全擲」與「單顆獨立重擲」，滿足微調故事元素的創作需求。
+* **🔊 零外掛合成音效**：內建 Web Audio API 振盪器演算法，即時動態合成骰子碰撞清脆聲與落地重擊音效。
+* **🤖 雙 AI 聯動創作**：
+  * **文本引擎 (`Gemini 2.5 Flash`)**：精準融合四項要素，自動生成節奏緊湊的微型小說。
+  * **繪圖引擎 (`Imagen 3.0`)**：根據生成劇情自動提煉提示詞，繪製 1:1 高畫質故事插圖。
+* **🎨 多元題材與全自訂系統**：內建「奇幻冒險、科幻未來、童話繪本、賽博朋克、日常驚奇」五大主題庫，並提供 24 面完全自訂編輯器。
+* **🖥️ 一頁式展示平台 (Showcase UI)**：採用深色玻璃擬態（Dark Glassmorphism）設計，完美整合專案介紹、技術架構與實機試玩區。
 
-代表維度
+---
 
-色彩識別
+## 🛠️ 技術架構
 
-預設元素範例
+| 技術層級 | 採用技術 / 工具 | 應用說明 |
+| :--- | :--- | :--- |
+| **結構與樣式** | `HTML5` / `Tailwind CSS (CDN)` | 單檔架構設計、響應式網格佈局、玻璃擬態視覺特效 |
+| **3D 渲染引擎** | `CSS3 Transform-Style: Preserve-3D` | 六面體空間定位 (`translateZ`) 與多圈隨機累積旋轉演算法 |
+| **音訊合成** | `Web Audio API` | 無外部音檔依賴，透過三角波與正弦波即時生成互動音效 |
+| **大型語言模型** | `Google Gemini API (gemini-2.5-flash)` | RESTful API 非同步請求，處理創意文本生成 |
+| **圖像生成模型** | `Google Imagen API (imagen-3.0-generate-002)` | Base64 圖像解碼與即時渲染展示 |
+| **資料持久化** | `Browser LocalStorage` | 安全儲存使用者端 API Key，保障隱私不外洩 |
 
-核心作用
+---
 
-Die 01
-
-👤 角色 (Character)
-
-🟣 幻影紫
-
-巫師、機器人、流浪貓、賽博駭客
-
-確立故事的主角視角與性格基調
-
-Die 02
-
-🏰 場景 (Setting)
-
-🟢 翡翠綠
-
-迷霧森林、太空站、雲端之城、霓虹暗巷
-
-建構世界觀與事件發生的空間舞台
-
-Die 03
-
-💥 事件 (Event)
-
-🟠 琥珀橙
-
-時空穿越、尋找秘寶、遭遇危機、解開暗號
-
-推動劇情發展的核心衝突與轉折點
-
-Die 04
-
-🗝️ 道具 (Item)
-
-🔴 玫瑰紅
-
-神秘鑰匙、時間沙漏、魔法水晶、加密硬碟
-
-成為破局關鍵或貫穿劇情的象徵物
-
-🌟 平台亮點功能
-
-🧊 擬真 3D 物理翻轉：支援「一鍵全擲」與「單顆獨立重擲」，滿足微調故事元素的創作需求。
-
-🔊 零外掛合成音效：內建 Web Audio API 振盪器演算法，即時動態合成骰子碰撞清脆聲與落地重擊音效。
-
-🤖 雙 AI 聯動創作：
-
-文本引擎 (Gemini 2.5 Flash)：精準融合四項要素，自動生成節奏緊湊的微型小說。
-
-繪圖引擎 (Imagen 3.0)：根據生成劇情自動提煉提示詞，繪製 1:1 高畫質故事插圖。
-
-🎨 多元題材與全自訂系統：內建「奇幻冒險、科幻未來、童話繪本、賽博朋克、日常驚奇」五大主題庫，並提供 24 面完全自訂編輯器。
-
-🖥️ 一頁式展示平台 (Showcase UI)：採用深色玻璃擬態（Dark Glassmorphism）設計，完美整合專案介紹、技術架構與實機試玩區。
-
-🛠️ 技術架構
-
-技術層級
-
-採用技術 / 工具
-
-應用說明
-
-結構與樣式
-
-HTML5 / Tailwind CSS (CDN)
-
-單檔架構設計、響應式網格佈局、玻璃擬態視覺特效
-
-3D 渲染引擎
-
-CSS3 Transform-Style: Preserve-3D
-
-六面體空間定位 (translateZ) 與多圈隨機累積旋轉演算法
-
-音訊合成
-
-Web Audio API
-
-無外部音檔依賴，透過三角波與正弦波即時生成互動音效
-
-大型語言模型
-
-Google Gemini API (gemini-2.5-flash)
-
-RESTful API 非同步請求，處理創意文本生成
-
-圖像生成模型
-
-Google Imagen API (imagen-3.0-generate-002)
-
-Base64 圖像解碼與即時渲染展示
-
-資料持久化
-
-Browser LocalStorage
-
-安全儲存使用者端 API Key，保障隱私不外洩
-
-🗺️ 開發歷程
+## 🗺️ 開發歷程
 
 本專案從單純的 3D 互動網頁逐步演進為結合生成式 AI 的一頁式展示平台：
 
-版本階段
+| 版本階段 | 里程碑名稱 | 核心演進內容 |
+| :---: | :--- | :--- |
+| **v1.0** | 🌱 **基礎互動原型** | 完成 4 顆 3D CSS 立體骰子、多題材預設庫、Web Audio 音效與故事句型產生器。 |
+| **v2.0** | ✨ **AI 雙引擎接入** | 整合 Gemini 文本生成與 Imagen 繪圖 API，實現「擲骰 ➔ 寫作 ➔ 繪圖」自動化流程。 |
+| **v3.0** | 🛡️ **體驗與異常優化** | 新增前端 `API Key` 安全設定視窗、無金鑰離線範例模式與精準 HTTP 錯誤診斷提示。 |
+| **v4.0** | 🚀 **一頁式展示平台** | 重構為高圖示密度、極簡文字的 Showcase 展示網站，將專案特色與實機試玩無縫融合。 |
 
-里程碑名稱
+---
 
-核心演進內容
+## 🚀 快速開始
 
-v1.0
-
-🌱 基礎互動原型
-
-完成 4 顆 3D CSS 立體骰子、多題材預設庫、Web Audio 音效與故事句型產生器。
-
-v2.0
-
-✨ AI 雙引擎接入
-
-整合 Gemini 文本生成與 Imagen 繪圖 API，實現「擲骰 ➔ 寫作 ➔ 繪圖」自動化流程。
-
-v3.0
-
-🛡️ 體驗與異常優化
-
-新增前端 API Key 安全設定視窗、無金鑰離線範例模式與精準 HTTP 錯誤診斷提示。
-
-v4.0
-
-🚀 一頁式展示平台
-
-重構為高圖示密度、極簡文字的 Showcase 展示網站，將專案特色與實機試玩無縫融合。
-
-🚀 快速開始
-
-1️⃣ 取得專案
-
+### 1️⃣ 取得專案
 無需任何建置工具，直接下載本專案的 HTML 檔案即可使用：
 
+```bash
 git clone https://github.com/your-username/3d-story-dice-ai.git
 cd 3d-story-dice-ai
+```
 
+### 2️⃣ 啟動遊戲平台
+直接雙擊開啟 `index.html`（或透過 VS Code Live Server 開啟），即可在瀏覽器中體驗完整的 3D 骰子與展示介面。
 
-2️⃣ 啟動遊戲平台
+### 3️⃣ 設定 AI 金鑰（選用）
 
-直接雙擊開啟 index.html（或透過 VS Code Live Server 開啟），即可在瀏覽器中體驗完整的 3D 骰子與展示介面。
+<details>
+<summary><b>🔑 點擊展開：如何開啟真實 AI 故事與插圖生成功能？</b></summary>
 
-3️⃣ 設定 AI 金鑰（選用）
+1. 前往 [Google AI Studio](https://aistudio.google.com/) 免費申請一組 **Gemini API Key**。
+2. 開啟網頁後，點擊右上角的 **`🔑 API Key`** 按鈕。
+3. 將金鑰貼入輸入框並點擊儲存（金鑰僅保存在您本機瀏覽器的 `LocalStorage` 中，不會上傳至任何第三方伺服器）。
+4. 點擊 **`🎲 一鍵全擲`** 選出元素，再按下 **`✨ AI 生成故事與插圖`** 即可開始創作！
 
-🔮 未來展望 (Roadmap)
+> *註：若未設定 API Key，系統仍可完整運行 3D 擲骰、音效與「離線展示範例故事」功能。*
 
-[x] 3D 多軸物理翻轉動畫與單骰重擲機制
+</details>
 
-[x] Web Audio 原生合成音效系統
+---
 
-[x] Gemini 故事生成與 Imagen 插圖繪製串接
+## 🔮 未來展望 (Roadmap)
 
-[x] 一頁式高圖示化展示網站（Showcase Landing Page）
+- [x] 3D 多軸物理翻轉動畫與單骰重擲機制
+- [x] Web Audio 原生合成音效系統
+- [x] Gemini 故事生成與 Imagen 插圖繪製串接
+- [x] 一頁式高圖示化展示網站（Showcase Landing Page）
+- [ ] 語音朗讀功能（Web Speech API 有聲繪本旁白）
+- [ ] 故事繪本圖卡一鍵匯出為 PDF / PNG 分享圖
+- [ ] 多人連線接龍模式（WebRTC / Firebase 同步擲骰）
 
-[ ] 語音朗讀功能（Web Speech API 有聲繪本旁白）
+---
 
-[ ] 故事繪本圖卡一鍵匯出為 PDF / PNG 分享圖
+## 📄 授權條款
 
-[ ] 多人連線接龍模式（WebRTC / Firebase 同步擲骰）
-
-📄 授權條款
-
-本專案採用 MIT License 開源授權，歡迎自由修改、學習與用於非商業或教育展示用途。
+本專案採用 [MIT License](https://opensource.org/licenses/MIT) 開源授權，歡迎自由修改、學習與用於非商業或教育展示用途。
